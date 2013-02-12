@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"> 
+<head> 
+  <title></title> 
+  <!-- Slidy: http://www.w3.org/Talks/Tools/Slidy2/ -->
+  <link rel="stylesheet" type="text/css" media="screen, projection, print" href="slidy.css" /> 
+  <script src="slidy.js" charset="utf-8"
+  type="text/javascript"></script> 
+  <link rel="stylesheet" type="text/css" href="sh_style.css" />
+  <!-- Highlighting: http://zenzike.com/posts/2010-10-14-highlighting-haskell-with-shjs -->
+  <script type="text/javascript" src="sh_main.js" > </script>
+  <script type="text/javascript" src="sh_haskell.js" > </script>
+  <script type="text/javascript" src="sh_xml.js" > </script>
+  <script type="text/javascript" src="sh_init.js" > </script>
+
+  <!-- Custom style -->
+  <style type="text/css"> 
+    .cover, h1, h2, h3, h4 {
+      text-align: center;
+    }
+    .speakers {
+      margin: 1em 0;
+    }
+    .speakers li {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    .slide > img {
+      margin: 0 auto;
+    }
+    table {
+      margin: 0 auto;
+      border-spacing: 0.5em;
+    }
+    table th, table td {
+      padding: 0 2em;
+    }
+    code {
+      color: #336;
+    }
+    .full {
+      max-width: 98%;
+      margin: 0 auto;
+    }
+
+    @media screen {
+      .toolbar { display:none }
+    }
+  </style> 
+</head>
+<body onload="sh_highlightDocument();">
+
+<div class="slide cover"> 
+  <h2>Schnuppertauchgang</h2>
+  <h2>C3D2-Web</h2>
+  <ul class="speakers">
+    <li>Astro &lt;astro@spaceboyz.net&gt;</li>
+  </ul>
+  <p>C3D2 Lightning Talks</p>
+  <p>2013-02-12</p>
+</div> 
+
+<div class="slide">
+  <h1>Was ist C3D2-Web?</h1>
+  <ul>
+    <li>Makefile + XSLT</li>
+    <li>Statischer Output</li>
+  </ul>
+  <h2>Check it out:</h2>
+  <pre>git clone http://www.c3d2.de/c3d2-web.git &&
+cd c3d2-web &&
+make -j3 &&
+x-www-browser www/news.html</pre>
+  <p>Dependencies: make, xsltproc, rsync</p>
+</div>
+
+<div class="slide">
+  <h1>(Prä-)historisches (1/2)</h1>
+  <img class="full" src="c3d2-legacy1.png"/>
+</div>
+<div class="slide">
+  <h1>(Prä-)historisches (2/2)</h1>
+  <img class="full" src="c3d2-legacy2.png"/>
+</div>
+
+<div class="slide">
+  <h1>Historisches</h1>
+  <ul class="incremental">
+    <li>
+      Das war <i>Typo3</i>, wir wollten aber:
+      <ul class="incremental">
+	<li>Strukturierte Daten (XML) statt klicken (GUI)</li>
+	<li>Änderungen lokal ausprobieren</li>
+	<li>Versionskontrolle statt Datenbank</li>
+	<li>Sicherheit statt PHP</li>
+      </ul>
+    </li>
+    <li>Start ungefähr 2005, online 2006</li>
+    <li>3665 Commits, 208 MB .git/</li>
+    <li>
+      Credits:
+      <ul class="incremental">
+	<li>Neues Layout: turbo24prg</li>
+	<li>Code: toidinamai</li>
+	<li>Migration alter News: riot_dd</li>
+	<li>Meiste Commits: sven</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<div class="slide incremental">
+  <h1>Ran an den Code!</h1>
+  <p>Wichtigste Frage:</p>
+  <p style="font-weight: bold">Where's the content?</p>
+  <pre>c3d2-web % ls content/
+<span style="color: #070">datenspuren/</span>
+<span style="color: #f70">events.xml</span>
+<span style="color: #f70">navigation.xml</span>
+<span style="color: #00f">news/</span>
+<span style="color: #a00">old-site/</span>
+<span style="color: #00f">pages/</span>
+<span style="color: #666">static/</span></pre>
+</div>
+
+<div class="slide">
+  <h1>Bauen!</h1>
+  <pre>make</pre>
+  <ul>
+    <li>Holen von <code>chaosupdates.xml</code></li>
+    <li>Zusammenstellen von <code>news.xml</code> und <code>calendar-summary.xml</code></li>
+    <li>XML mit XSLT nach <code>build/</code></li>
+    <li>rsync von <code>build/</code> und <code>content/static/</code> nach <code>www/</code></li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Navigation</h1>
+  <h2>content/navigation.xml</h2>
+  <img style="float: left" src="c3d2-navigation.png"/>
+  <pre style="margin-left: 300px" class="sh_xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+
+&lt;!--
+When changing the position of these files in the navigation sidebar,
+please adjust the #navigation li:nth-child(...) rules in the CSS file.
+-->
+&lt;navigation>
+  &lt;file title="News">news&lt;/file>
+  &lt;file>whois&lt;/file>
+  &lt;file>treff&lt;/file>
+  &lt;file>themenabende&lt;/file>
+  &lt;file>events&lt;/file>
+  &lt;file>schule&lt;/file>
+
+  &lt;file>kontakt&lt;/file>
+  &lt;file>mailingliste&lt;/file>
+  &lt;file>muc&lt;/file>
+  &lt;file>wiki&lt;/file>
+
+  &lt;file>radio&lt;/file>
+  &lt;file>podcast&lt;/file>
+  &lt;file>pentamusic&lt;/file>
+
+  &lt;file>shop&lt;/file>
+  &lt;file>warez&lt;/file>
+&lt;/navigation></pre>
+</div>
+
+<div class="slide">
+  <h1>Pages (1/3)</h1>
+  <ul>
+    <li><pre>content/pages/*.xml</pre></li>
+    <li>HTML-ähnlicher, eingeschränkter Dialekt</li>
+    <li><pre class="sh_xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE page SYSTEM "http://www.c3d2.de/dtd/c3d2web.dtd">
+&lt;?xml-stylesheet type="text/xsl" href="../xsl/html.xsl" ?>
+
+&lt;page title="Whois" pagetitle="Whois c3d2?">
+ &lt;p title="Wohin? Woher? Weshalb? c3d2?">
+  Der CCC Dresden (C3D2) ist eine Gruppe von Leuten, die Spaß am
+  kreativen Umgang mit Informationstechnologie haben.
+ &lt;/p>
+[...]</pre></li>
+    <li>Validiert mit <code>xsd/c3d2web.xsd</code></li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Pages (2/3)</h1>
+  <p>Dank XML ist auch XHTML erlaubt. Beispiel <code>content/news/event-tpb-afk.xml</code>:</p>
+  <pre>&lt;iframe <i style="color: red">xmlns="http://www.w3.org/1999/xhtml"</i>
+        src="http://www.youtube-nocookie.com/embed/KCAGb7oSwDs" 
+        width="640" height="360" 
+        frameborder="0" allowfullscreen="allowfullscreen">
+&lt;/iframe></pre>
+</div>
+<div class="slide">
+  <h1>Pages (2/3)</h1>
+  <p>
+    Spezielle Funktionalitäten in XSLT implementiert:
+  </p>
+  <dl>
+    <dt>content/pages/events.xml</dt>
+    <dd><pre class="sh_xml">&lt;news-list prefix="event-" details="event"/></pre></dd>
+    <dt>content/pages/themenabende.xml</dt>
+    <dd><pre class="sh_xml">&lt;news-list prefix="ta-" details="event"/></pre></dd>
+    <dt>content/pages/radio.xml</dt>
+    <dd><pre class="sh_xml">&lt;news-list prefix="pentaradio24-" details="resources-only"/></pre></dd>
+    <dt>content/pages/podcast.xml</dt>
+    <dd><pre class="sh_xml">&lt;news-list prefix="pentacast-" details="resources-only"/></pre></dd>
+  </dl>
+</div>
+
+<div class="slide">
+  <h1>News (1/2)</h1>
+  <ul>
+    <li>Spezialseite (deshalb <code>file/@title</code> in <code>navigation.xml</code>)</li>
+    <li><code>news.xml</code> wird aus allen <code>news/*.xml</code> durch <code>scripts/gen_news.xml.sh</code> generiert</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>News (2/2)</h1>
+  <ul>
+    <li>
+      <pre class="sh_xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE item SYSTEM "http://www.c3d2.de/dtd/c3d2web.dtd">
+&lt;?xml-stylesheet type="text/xsl" href="../../xsl/html.xsl" ?>
+&lt;item title="Screening: TPB AFK" date="2013-02-07T23:45:00" author="Astro">
+  &lt;image title="TPB AFK">tpb-afk.jpg&lt;/image>
+  &lt;event>
+    &lt;start>2013-02-09T20:00:00&lt;/start>
+    &lt;location>Informatikfakultät TU Dresden, Raum E023&lt;/location>
+  &lt;/event>
+
+  &lt;p>
+    Sei es der Gründungsimpuls für Piratenparteien auf der ganzen
+    Welt, Vorreiter für freien Kulturaustausch, oder auch Indikator
+    für Zensurversuche in der westlichen Welt, die Piratenbucht ist
+    eine Website, die Geschichte schrieb und weiterhin schreibt.
+  &lt;/p>
+[...]
+      </pre>
+    </li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Veröffentlichung von Multimedia</h1>
+  <ul class="incremental">
+    <li><pre class="sh_xml">&lt;resource title="pentaradio24 vom 22. Januar 2013"
+          size="92334332"
+          type="application/ogg"
+          url="http://ftp.c3d2.de/pentaradio/pentaradio-2013-01-22.ogg">
+  &lt;alternative size="83985199"
+               type="audio/mpeg"
+               url="http://ftp.c3d2.de/pentaradio/pentaradio-2013-01-22.mp3"/>
+  &lt;alternative size="63039464"
+               type="audio/opus"
+               url="http://ftp.c3d2.de/pentaradio/pentaradio-2013-01-22.opus"/>
+&lt;/resource></pre></li>
+    <li><pre class="sh_xml">&lt;resource title="Pentabug" size="173518847" type="video/mp4"
+	  url="http://ftp.c3d2.de/datenspuren/2012/5074_pentabug.mp4"
+	  preview="http://ftp.c3d2.de/datenspuren/2012/5074_pentabug.gif"
+	  poster="http://ftp.c3d2.de/datenspuren/2012/5074_pentabug.jpg"
+	  details-link="http://datenspuren.de/2012/fahrplan/events/5074.de.html"
+	  feedback-link="https://cccv.pentabarf.org/feedback/DS2012/event/5074.de.html">
+  &lt;alternative size="103679070" type="video/webm"
+	       url="http://ftp.c3d2.de/datenspuren/2012/5074_pentabug.webm"/>
+&lt;/resource></pre></li>
+    <li><code>&lt;audio&gt;</code>/<code>&lt;video&gt;</code>/Flash-Fallback
+      werden erst nach Klick auf <span style="padding: 0.16em 0.8em 0.2em;
+vertical-align: middle;
+line-height: 1.3em;
+height: 1.3em;
+color: white;
+font-weight: bold;
+text-shadow: 0 -1px rgba(0, 0, 0, 0.55);
+border: 1px solid rgba(0, 0, 0, 0.34);
+border-bottom-color: rgba(0, 0, 0, 0.55);
+background: #83AC35;
+box-shadow: 0 1px 0 rgba(255,255,255,0.55) inset,0 1.5px
+      rgba(0,0,0,0.155),0 -0.65em rgba(0,0,0,0.15) inset;
+border-radius: 3px;
+text-decoration: none;
+border-bottom: #ebc63c 1px solid;
+margin-bottom: 1px;
+cursor: pointer;
+">▶ Play</span> erzeugt (JavaScript)</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Kalender (1/2)</h1>
+  <ul class="incremental">
+    <li>
+      <p>XSLT kann nicht nur XML, sondern auch Text generieren</p>
+      <p>Beispiel Target <code>ical.ics</code></p>
+    </li>
+    <li>
+      <p>Kalendereinträge kommen aus <code>&lt;event/&gt;</code> in:</p>
+      <ul>
+	<li><code>content/news/*.xml</code></li>
+	<li><code>content/events.xml</code></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<div class="slide">
+  <h1>Kalender (2/2)</h1>
+  <img style="float: right" src="c3d2-calendar.png"/>
+  <ul class="incremental">
+    <li>Anzeige der nächsten fünf Events auf jeder Seite in der rechten Seitenleiste</li>
+    <li>Viel Logik in <code>xsl/calendar.xsl</code> generiert Target <code>calendar.html</code></li>
+    <li>Hilighting des aktuellen Tages mit JavaScript</li>
+    <li>Bonus: Implementierung des Diskordischen Kalenders in <code>xsl/ddate.xsl</code></li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Statisch und trotzdem interaktiv</h1>
+  <ul class="incremental">
+    <li>
+      <p>Dynamische Inhalte:</p>
+      <ul>
+	<li>Kommentare von Pentamedia.org</li>
+	<li>Torrents von Bitlove.org</li>
+      </ul>
+    </li>
+    <li>JavaScript holt Daten mit AJAX</li>
+    <li>Cross-Origin Resource Sharing: enable-cors.org</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Committing to C3D2-Web</h1>
+  <ul class="incremental">
+    <li>SSH-Pubkey einem <i>hive</i>-Administrator geben</li>
+    <li><i>webbuildd</i> ist ein LXC-Container in <i>hive</i> (KVM auf <i>buddelkiste</i>)</li>
+    <li><pre>git rm origin &&
+git remote add origin git@git.c3d2.de:c3d2-web.git</pre></li>
+    <li><pre>git add ... && git commit</pre></li>
+    <li>
+      <pre>git push</pre>
+      <p>
+	<code>post-receive</code> auf <i>webbuildd</i> aktualisiert
+	Checkout und führt aus:
+      </p>
+      <pre>make export DESTDIR=/var/www</pre>
+      <p>Ausserdem: Webhooks für Pentamedia.org und ⠞⠊⠛⠛⠑⠗</p>
+      <p>Mit Git-Hook ist Output für Client sichtbar</p>
+    </li>
+  </ul>
+</div>
+
+<!-- Ausblick -->
+<!-- C3D2-Web ist hoffentlich nicht unsere letzte Homepage. -->
+<!-- Wichtiger ist, dass regelmäßig Inhalte hinzugefügt werden. -->
+
+</body>
+</html>
